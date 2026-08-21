@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bramble Customer Insight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  /* brightened working steps of the brand colours */
+  --forest:#1F3D2E; --forest-2:#2E7D57; --forest-3:#3B9A6B;
+  --sage:#90A682; --sage-2:#6E9161;
+  --clay:#B7845A; --clay-2:#C88F55; --clay-ink:#8A5A22;
+  --teal:#12808A; --teal-2:#1A9AA5;
+  --brick:#BE5738; --brick-ink:#9B412A;
+  --navy:#122033; --ivory:#FAF8F3;
+
+  /* tints and edges, one pair per colour */
+  --sage-bg:#EDF5E4; --sage-edge:#C6DCB0;
+  --teal-bg:#E2F1F1; --teal-edge:#A6D4D8;
+  --clay-bg:#FCF1E2; --clay-edge:#EDD2AE;
+  --brick-bg:#FDEBE4; --brick-edge:#F2C6B4;
+
+  /* neutrals, light and warm */
+  --plane:#FFFFFF; --surface-1:#FFFFFF; --card-2:#F8F6F1;
+  --sand:#F1EDE4; --sand-deep:#E2DCCE; --sand-edge:#E5E0D4;
+  --ink:#122033; --ink-2:#4E5A67; --muted:#8B8C86;
+  --grid:#EFEBE2; --axis:#DCD6C8; --border:#E5E0D4;
+  --brand:var(--forest-2); --brand-soft:var(--sage-bg);
+  --s1:#2E7D57; --s8:#C88F55; --neu:#E0DACE;
+  --good:#2E7D57; --warn:#8A5A22; --serious:#BE5738; --crit:#BE5738;
+  --up-good:#2E7D57;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --shadow:0 1px 2px rgba(31,61,46,.05),0 2px 8px rgba(31,61,46,.06);
+  --shadow-lift:0 3px 6px rgba(31,61,46,.08),0 10px 26px rgba(31,61,46,.11);
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --forest:#8FCFAA; --forest-2:#5EB287; --forest-3:#77C79C;
+  --sage:#A9C39A; --sage-2:#8FAC80;
+  --clay:#DDA470; --clay-2:#CE9560; --clay-ink:#E0B37B;
+  --teal:#3FB3BD; --teal-2:#55C6CF;
+  --brick:#E07C58; --brick-ink:#EC9273;
+  --navy:#070C13; --ivory:#F3F1EC;
+  --sage-bg:#1A2A1F; --sage-edge:#2F4636;
+  --teal-bg:#12292C; --teal-edge:#255055;
+  --clay-bg:#2C2114; --clay-edge:#4E3A22;
+  --brick-bg:#2F1C15; --brick-edge:#563024;
+  --plane:#0E1512; --surface-1:#16201B; --card-2:#1B2721;
+  --sand:#1B2721; --sand-deep:#2A3830; --sand-edge:#2A3830;
+  --ink:#F2F1EA; --ink-2:#BFC8BF; --muted:#8C978C;
+  --grid:#233029; --axis:#2A3830; --border:#2A3830;
+  --s1:#5EB287; --s8:#DDA470; --neu:#3A4A40;
+  --good:#5EB287; --warn:#E0B37B; --serious:#E07C58; --crit:#E07C58;
+  --up-good:#5EB287;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 3px 10px rgba(0,0,0,.3);
+  --shadow-lift:0 4px 18px rgba(0,0,0,.42);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-weight:600}
+.wrap{max-width:1520px;margin:0 auto;padding:0 26px 80px}
+.band .wrap,.subbar .wrap{padding-bottom:0}
+
+/* ---- light header ---- */
+header{position:sticky;top:0;z-index:40}
+.band{background:var(--plane)}
+.hrow{display:flex;gap:15px;align-items:center;flex-wrap:wrap;padding:16px 0 0}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);
+  font-size:25px;font-weight:600;letter-spacing:-.014em;color:var(--forest)}
+.brand em{font-style:normal;font-family:var(--sans);font-size:11.5px;font-weight:600;
+  color:var(--sage-2);letter-spacing:.1em;text-transform:uppercase;
+  padding-left:13px;margin-left:3px;border-left:1px solid var(--sand-deep)}
+.spacer{flex:1}
+.tabs{display:flex;gap:8px;margin-top:15px}
+.tabs button{border:0;background:transparent;color:var(--muted);font-family:var(--serif);
+  font-size:18px;font-weight:600;padding:9px 4px 12px;margin-right:14px;cursor:pointer;
+  border-bottom:3px solid transparent}
+.tabs button:hover{color:var(--ink-2)}
+.tabs button.on{color:var(--forest);border-bottom-color:var(--clay-2)}
+.tabs .count{display:inline-block;background:var(--brick);color:#fff;font-family:var(--sans);
+  font-size:11px;font-weight:700;border-radius:10px;padding:1px 8px;margin-left:8px}
+
+.subbar{background:var(--card-2);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border)}
+.subbar .hrow{padding:11px 0}
+
+.btn{background:var(--surface-1);border:1px solid var(--sand-deep);color:var(--ink-2);
+  border-radius:8px;padding:6px 11px;font:inherit;font-size:12.5px;cursor:pointer}
+.btn:hover{border-color:var(--forest-2);color:var(--forest-2)}
+.seg{display:inline-flex;border:1px solid var(--sand-deep);border-radius:8px;overflow:hidden}
+.seg button{border:0;border-right:1px solid var(--sand-deep);background:var(--surface-1);
+  color:var(--ink-2);font:inherit;font-size:12.5px;padding:6px 13px;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--forest-2);color:#fff}
+.ctl{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+select{background:var(--surface-1);border:1px solid var(--sand-deep);color:var(--ink);
+  border-radius:8px;padding:6px 10px;font:inherit;font-size:12.5px}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;
+  border:1px solid var(--sage-edge);background:var(--sage-bg);border-radius:20px;
+  padding:5px 13px;color:var(--forest-2);font-weight:500}
+.chip i{width:7px;height:7px;border-radius:50%;display:inline-block;background:var(--forest-3)}
+
+.tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:22px 0 18px}
+.grid{display:grid;gap:18px;margin-bottom:18px}
+.g-7-5{grid-template-columns:7fr 5fr}
+.g-5-7{grid-template-columns:5fr 7fr}
+@media(max-width:1140px){.tiles{grid-template-columns:repeat(3,1fr)}
+  .g-7-5,.g-5-7{grid-template-columns:1fr}}
+
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:11px;
+  box-shadow:var(--shadow);padding:17px 19px 19px}
+.card h2{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:-.01em;
+  color:var(--forest)}
+.card .sub{font-size:12px;color:var(--muted);margin-top:3px}
+.chead{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px;
+  padding-bottom:11px;border-bottom:2px solid var(--tone-edge,var(--sage-edge))}
+
+/* ---- tinted tiles ---- */
+.tile{padding:0;overflow:hidden;position:relative;border-radius:11px;
+  background:var(--t-bg);border:1px solid var(--t-edge);box-shadow:var(--shadow)}
+.tile::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--t-bar)}
+.tone-teal{--t-bg:var(--teal-bg);--t-edge:var(--teal-edge);--t-bar:var(--teal)}
+.tone-sage{--t-bg:var(--sage-bg);--t-edge:var(--sage-edge);--t-bar:var(--forest-2)}
+.tone-clay{--t-bg:var(--clay-bg);--t-edge:var(--clay-edge);--t-bar:var(--clay-2)}
+.tone-brick{--t-bg:var(--brick-bg);--t-edge:var(--brick-edge);--t-bar:var(--brick)}
+.tile .k{font-size:11.5px;color:var(--ink-2);font-weight:600;line-height:1.4;padding:15px 15px 0}
+.tile .v{font-size:30px;font-weight:700;letter-spacing:-.028em;margin:6px 0 3px;
+  color:var(--ink);padding:0 15px}
+.tile .d{font-size:11px;color:var(--ink-2);opacity:.82;padding:0 15px}
+.tile .d:last-child{padding-bottom:15px}
+.tile .vsbar,.tile .split{margin-left:15px;margin-right:15px}
+.tile svg{margin:7px 15px 14px}
+.tile.clickable{cursor:pointer}
+.tile.clickable:hover{box-shadow:var(--shadow-lift);transform:translateY(-1px)}
+.tile .more{font-size:11.5px;color:var(--forest-2);font-weight:700;padding:0 15px 15px;margin-top:5px}
+.vsbar{height:6px;border-radius:3px;background:rgba(18,32,51,.10);margin:9px 0 5px;
+  overflow:hidden;display:flex}
+.vsbar span{height:100%}
+.ok{color:var(--up-good);font-weight:700}
+.bad{color:var(--brick);font-weight:700}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:10.5px;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:0 10px 9px;border-bottom:1px solid var(--sand-deep);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--grid);vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover{background:var(--sage-bg)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;
+  padding:2px 9px;border-radius:20px;white-space:nowrap;border:1px solid transparent}
+.p-crit,.p-ser{background:var(--brick-bg);color:var(--brick-ink);border-color:var(--brick-edge)}
+.p-warn{background:var(--clay-bg);color:var(--clay-ink);border-color:var(--clay-edge)}
+.p-good{background:var(--sage-bg);color:var(--forest-2);border-color:var(--sage-edge)}
+.p-mut{background:var(--card-2);color:var(--ink-2);border-color:var(--sand-deep)}
+.code{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.split{display:flex;height:9px;border-radius:5px;overflow:hidden;min-width:88px}
+.split span{height:100%}
+.expander{color:var(--forest-2);font-size:11px;display:inline-block;width:12px}
+#products td:first-child{min-width:210px}
+#products .code{white-space:nowrap}
+
+.vb{border-bottom:1px solid var(--grid);padding:11px 10px;cursor:pointer;border-radius:8px}
+.vb:last-child{border-bottom:0}
+.vb:hover{background:var(--card-2)}
+.vb .m{display:flex;gap:7px;align-items:center;margin-bottom:5px;flex-wrap:wrap}
+.vb .t{color:var(--ink);font-size:13.5px}
+.tag{font-size:10.5px;color:var(--ink-2);border:1px solid var(--sand-deep);
+  border-radius:5px;padding:1px 7px;background:var(--card-2)}
+
+.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+.scrim{position:fixed;inset:0;background:rgba(18,32,51,.4);z-index:60;
+  opacity:0;pointer-events:none;transition:opacity .16s}
+.scrim.on{opacity:1;pointer-events:auto}
+.over{position:fixed;top:0;right:0;height:100%;width:min(1000px,96vw);z-index:61;
+  background:var(--plane);border-left:1px solid var(--border);overflow-y:auto;
+  transform:translateX(102%);transition:transform .22s ease}
+.over.on{transform:none}
+.over .inner{padding:24px 28px 80px}
+.ohead{display:flex;align-items:flex-start;gap:12px;margin-bottom:3px}
+.ohead h2{font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:-.015em;
+  color:var(--forest)}
+.close{border:none;background:transparent;color:var(--muted);font-size:26px;
+  cursor:pointer;line-height:1;padding:0 4px}
+.close:hover{color:var(--forest-2)}
+.osub{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+.o2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.o2{grid-template-columns:1fr}}
+
+svg{overflow:visible}
+.axtext{font-size:10.5px;fill:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--sans)}
+.axname{font-size:11px;fill:var(--ink-2);font-family:var(--sans)}
+.dlabel{font-size:10.5px;fill:var(--ink-2);font-variant-numeric:tabular-nums;font-family:var(--sans)}
+.qlabel{font-size:10px;fill:var(--muted);letter-spacing:.06em;text-transform:uppercase;
+  font-family:var(--sans);font-weight:600;paint-order:stroke;
+  stroke:var(--surface-1);stroke-width:3.5px;stroke-linejoin:round}
+.tipbox{position:fixed;z-index:80;pointer-events:none;background:var(--navy);
+  color:#F3F1EC;font-size:11.5px;padding:8px 11px;border-radius:8px;
+  opacity:0;transition:opacity .1s;max-width:280px;line-height:1.45;font-family:var(--sans)}
+.tipbox.on{opacity:1}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="tipbox" id="tip"></div>
+
+<header>
+ <div class="band"><div class="wrap">
+  <div class="hrow">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <circle cx="10.2" cy="10.6" r="5.3" fill="#90A682"/>
+        <circle cx="17.6" cy="12.2" r="5.3" fill="#B7845A"/>
+        <circle cx="13.6" cy="18.2" r="5.3" fill="#E7E1D6"/>
+      </svg>Bramble<em>Customer Insight</em></div>
+    <div class="spacer"></div>
+    <div class="chip" id="dataChip"></div>
+    <button class="btn" id="themeBtn">Dark</button>
+  </div>
+  <div class="tabs">
+    <button data-tab="say" class="on">What customers are saying</button>
+    <button data-tab="att">Needs attention <span class="count" id="attCount">0</span></button>
+  </div>
+ </div></div>
+ <div class="subbar"><div class="wrap">
+  <div class="hrow" style="padding:11px 0">
+    <div class="ctl">Showing
+      <span class="seg" id="periodSeg">
+        <button data-p="1" class="on">1 week</button>
+        <button data-p="4">4 weeks</button>
+        <button data-p="12">12 weeks</button>
+      </span>
+    </div>
+    <div class="ctl">ending
+      <button class="btn" id="prevWk">&lsaquo;</button>
+      <select id="wkSel"></select>
+      <button class="btn" id="nextWk">&rsaquo;</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="ctl" id="cmpNote"></div>
+  </div>
+ </div></div>
+</header>
+
+<div class="wrap">
+  <div id="tabSay">
+    <div class="tiles" id="tiles"></div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="chead"><div><h2>What customers are talking about</h2></div></div>
+      <div id="cats"></div>
+    </div>
+    <div class="grid g-5-7">
+      <div class="card">
+        <div class="chead"><div><h2>How customers feel, by source</h2></div></div>
+        <div id="srcChart"></div>
+        <div class="legend">
+          <span><i style="background:var(--s1)"></i>Positive</span>
+          <span><i style="background:var(--neu)"></i>Neutral</span>
+          <span><i style="background:var(--s8)"></i>Negative</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h2>Products generating the most complaints</h2></div></div>
+        <div id="products"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="chead"><div><h2>In their own words</h2></div></div>
+      <div id="verbs"></div>
+    </div>
+  </div>
+
+  <div id="tabAtt" class="hide">
+    <div class="card" style="margin-bottom:14px">
+      <div class="chead"><div><h2>Themes running above their usual range</h2></div></div>
+      <div id="alerts"></div>
+    </div>
+    <div class="grid g-5-7">
+      <div class="card">
+        <div class="chead"><div><h2>Alerts raised in the last 12 months</h2></div></div>
+        <div id="history"></div>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h2>Theme matrix</h2></div></div>
+        <div id="matrix"></div>
+        <div class="legend">
+          <span><i style="background:var(--s1)"></i>Within usual range</span>
+          <span><i style="background:var(--s8)"></i>Above usual range</span>
+          <span style="color:var(--muted)">Circle size shows how fast it is changing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="over" id="over"><div class="inner" id="overInner"></div></aside>
+
+<script>
+const DATA = /*__DATA__*/;
+const $=s=>document.querySelector(s), el=(t,c,h)=>{const e=document.createElement(t);
+  if(c)e.className=c; if(h!==undefined)e.innerHTML=h; return e;};
+const W=DATA.meta.weeks, WS=DATA.meta.week_start, ORD=DATA.meta.orders;
+const SRC=DATA.meta.sources, CATS=DATA.meta.cats, TH=DATA.themes, SK=DATA.skus;
+const TGT=DATA.targets;
+const SERIES=['--s1','--s2','--s3','--s4','--s5','--s6','--s7','--s8'];
+const cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt=n=>n>=10000?Math.round(n/1000)+'k':n>=1000?(n/1000).toFixed(1)+'k':String(Math.round(n));
+const gbp=n=>n>=10000?'£'+Math.round(n/1000)+'k':n>=1000?'£'+(n/1000).toFixed(1)+'k':'£'+Math.round(n);
+const gbpx=n=>'£'+Math.round(n).toLocaleString('en-GB');
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const median=a=>{const s=[...a].sort((x,y)=>x-y);const m=s.length>>1;
+  return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+function weekLabel(i){
+  const d=new Date(WS[i]), e=new Date(d.getTime()+6*864e5);
+  const t=new Date(Date.UTC(e.getFullYear(),e.getMonth(),e.getDate()));
+  const dn=(t.getUTCDay()+6)%7; t.setUTCDate(t.getUTCDate()-dn+3);
+  const y0=new Date(Date.UTC(t.getUTCFullYear(),0,4));
+  const wn=1+Math.round(((t-y0)/864e5-3+((y0.getUTCDay()+6)%7))/7);
+  const f=x=>x.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  return {wn, yr:t.getUTCFullYear(), range:`${f(d)} to ${f(e)}`,
+          full:`Week ${wn}, ${t.getUTCFullYear()} (${f(d)} to ${f(e)})`, end:f(e)};
+}
+let CUR=W-1, P=1, TAB='say';
+const range=()=> [CUR-P+1, CUR];
+const acc=(arr)=>sum(arr.slice(CUR-P+1,CUR+1));
+const accPrev=(arr)=>sum(arr.slice(CUR-2*P+1,CUR-P+1));
+
+const tip=$('#tip');
+function showTip(e,html){tip.innerHTML=html;tip.classList.add('on');
+  const r=tip.getBoundingClientRect(); let x=e.clientX+14,y=e.clientY-10;
+  if(x+r.width>innerWidth-8)x=e.clientX-r.width-14;
+  if(y+r.height>innerHeight-8)y=innerHeight-r.height-8;
+  tip.style.left=x+'px';tip.style.top=y+'px';}
+const hideTip=()=>tip.classList.remove('on');
+function hover(n,h){n.addEventListener('mousemove',e=>showTip(e,h));
+  n.addEventListener('mouseleave',hideTip);}
+
+/* ---------------------------------------------- detection */
+function bandFor(code,i){
+  const share=k=>DATA.tot.n[k]?DATA.theme_n[code][k]/DATA.tot.n[k]:0;
+  const win=[]; for(let k=i-13;k<i;k++) win.push(share(k));
+  const med=median(win), mad=median(win.map(v=>Math.abs(v-med)));
+  const sig=Math.max(1.4826*mad, med*0.22, 0.00035);
+  const tot=DATA.tot.n[i];
+  return {lo:Math.max(0,(med-2.6*sig)*tot), hi:(med+2.6*sig)*tot,
+          mid:med*tot, med, sig, share:share(i)};
+}
+function themeStat(code){
+  const [a,b]=range();
+  const n=sum(DATA.theme_n[code].slice(a,b+1));
+  const prev=sum(DATA.theme_n[code].slice(a-P,a))||1;
+  let lo=0,hi=0; for(let i=a;i<=b;i++){const bd=bandFor(code,i);lo+=bd.lo;hi+=bd.hi;}
+  const bd=bandFor(code,b);
+  const z=(bd.share-bd.med)/bd.sig;
+  return {n,prev,chg:(n-prev)/prev,lo,hi,z,over:n>hi,
+          isNew: bd.med<0.0006 && bd.share>0.0025,
+          cost:sum(DATA.theme_cost[code].slice(a,b+1)),
+          churn:sum(DATA.theme_churn[code].slice(a,b+1)),
+          sent:DATA.theme_sent[code][b]};
+}
+function alertList(){
+  const out=[];
+  for(const code in TH){
+    if(TH[code][1]==='Praise') continue;
+    const s=themeStat(code), sev=TH[code][2];
+    const trig=(s.over&&s.n>=10*P)||s.isNew||(sev>=4&&s.z>=1.8&&s.n>=5);
+    if(!trig) continue;
+    let srcs=DATA.week_theme_src[code]
+      ? DATA.week_theme_src[code].slice(range()[0],range()[1]+1)
+          .reduce((a,r)=>r.map((v,j)=>a[j]+v),[0,0,0,0,0,0])
+      : DATA.theme_src[code].slice();
+    const tt=sum(srcs)||1;
+    const sk=DATA.theme_sku[code]||{}, bt=DATA.theme_batch[code]||{};
+    let first=CUR;
+    for(let i=CUR;i>Math.max(13,CUR-26);i--){const bd=bandFor(code,i);
+      if(DATA.theme_n[code][i]<=bd.hi){first=i+1;break;} first=i;}
+    out.push({code,...s,label:TH[code][0],cat:TH[code][1],sev,
+      active:srcs.map(v=>v/tt>0.12), topSku:Object.keys(sk)[0],
+      topBatch:Object.keys(bt)[0], first});
+  }
+  return out.sort((a,b)=>b.cost-a.cost);
+}
+
+/* ---------------------------------------------- svg */
+function svg(w,h){const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox',`0 0 ${w} ${h}`);s.setAttribute('width','100%');
+  s.style.height=h+'px';return s;}
+function mk(t,a){const e=document.createElementNS('http://www.w3.org/2000/svg',t);
+  for(const k in a)e.setAttribute(k,a[k]);return e;}
+function spark(vals,w,h,col){
+  const s=svg(w,h),mx=Math.max(...vals,1),mn=Math.min(...vals);
+  const X=i=>i/(vals.length-1)*w, Y=v=>h-2-((v-mn)/((mx-mn)||1))*(h-4);
+  s.appendChild(mk('path',{d:vals.map((v,i)=>(i?'L':'M')+X(i)+' '+Y(v)).join(' '),
+    fill:'none',stroke:col,'stroke-width':2,'stroke-linecap':'round','stroke-linejoin':'round'}));
+  s.appendChild(mk('circle',{cx:X(vals.length-1),cy:Y(vals.at(-1)),r:2.6,fill:col}));
+  return s;}
+function splitBar(pos,neu,neg,w){
+  const t=pos+neu+neg||1;
+  return `<div class="split" style="width:${w||96}px">
+    <span style="width:${pos/t*100}%;background:var(--s1)"></span>
+    <span style="width:${neu/t*100}%;background:var(--neu)"></span>
+    <span style="width:${neg/t*100}%;background:var(--s8)"></span></div>`;
+}
+
+/* ---------------------------------------------- tiles */
+function renderTiles(){
+  const box=$('#tiles'); box.innerHTML='';
+  const per = P===1?'this week':`last ${P} weeks`;
+  const fb=acc(DATA.tot.n), fbPrev=accPrev(DATA.tot.n);
+  const contacts=Math.round(acc(DATA.tot.support)*0.82);
+  const orders=sum(ORD.slice(CUR-P+1,CUR+1));
+  const rate=contacts/orders*1000;
+  const pos=acc(DATA.tot.pos),neu=acc(DATA.tot.neu),neg=acc(DATA.tot.neg);
+  const posPct=pos/(pos+neu+neg);
+  const ratN=acc(DATA.tot.rat_n);
+  let ratS=0; for(let i=CUR-P+1;i<=CUR;i++) ratS+=DATA.tot.rat[i]*DATA.tot.rat_n[i];
+  const rat=ratS/(ratN||1);
+  const cost=acc(DATA.tot.cost), costPrev=accPrev(DATA.tot.cost);
+  const lost=acc(DATA.tot.churn), lostPrev=accPrev(DATA.tot.churn);
+
+  const tiles=[
+    {k:`Pieces of feedback, ${per}`, v:fmt(fb),
+     d:`from ${fmt(contacts)} customer contacts`,
+     extra:cmp(fb,fbPrev,true),
+     spark:DATA.tot.n.slice(CUR-25,CUR+1),
+     tone:'teal',
+     tip:'Every separate point a customer made. One phone call can raise more than one point, so this is higher than the number of contacts.'},
+    {k:`Contacts per 1,000 orders, ${per}`, v:rate.toFixed(0),
+     d:`target ${TGT.contact_rate} or fewer`,
+     bar:{val:rate,target:TGT.contact_rate,invert:true},
+     spark:DATA.tot.n.map((v,j)=>v/ORD[j]*1000).slice(CUR-25,CUR+1),
+     tone:'teal',
+     tip:'How often customers get in touch, adjusted for how busy we were. A rise here is real, a rise in raw volume might just be a busy week.'},
+    {k:`Positive feedback, ${per}`, v:(posPct*100).toFixed(0)+'%',
+     d:`${fmt(pos)} positive · ${fmt(neu)} neutral · ${fmt(neg)} negative`,
+     splitbar:[pos,neu,neg], target:`target ${(TGT.positive*100).toFixed(0)}%`,
+     ok:posPct>=TGT.positive,
+     tone:'sage',
+     tip:'Share of all feedback the model reads as positive in tone. Support tickets pull this down, reviews push it up.'},
+    {k:`Average review score, ${per}`, v:rat.toFixed(2),
+     d:`out of 5, from ${fmt(ratN)} reviews`,
+     bar:{val:rat,target:TGT.review,max:5},
+     spark:DATA.tot.rat.slice(CUR-25,CUR+1),
+     tone:'sage',
+     tip:'Trustpilot, Google and reviews on our own product pages, combined.'},
+    {k:`Cost of putting things right, ${per}`, v:gbp(cost),
+     d:`${((cost/(179658*P))*100).toFixed(1)}% of sales in the same period`,
+     extra:cmp(cost,costPrev,true), more:'See the breakdown',
+     click:openCost,
+     spark:DATA.tot.cost.slice(CUR-25,CUR+1),
+     tone:'clay',
+     tip:'Replacements, refunds, goodwill and the value of customers who cancelled.'},
+    {k:`Customers lost, ${per}`, v:String(lost),
+     d:'cancelled after a complaint',
+     extra:cmp(lost,lostPrev,true), more:'See what they were worth',
+     click:openCost,
+     spark:DATA.tot.churn.slice(CUR-25,CUR+1),
+     tone:'brick',
+     tip:'Subscribers who cancelled within four weeks of raising a complaint.'}
+  ];
+  tiles.forEach(t=>{
+    const c=el('div','tile tone-'+(t.tone||'sage')+(t.click?' clickable':''));
+    c.appendChild(el('div','k',t.k));
+    c.appendChild(el('div','v',t.v));
+    if(t.splitbar) c.insertAdjacentHTML('beforeend',
+      splitBar(...t.splitbar,999).replace('width:999px','width:100%')+
+      `<div class="d" style="margin-top:3px"><span class="${t.ok?'ok':'bad'}">${t.target}</span></div>`);
+    if(t.bar){
+      const {val,target,invert,max}=t.bar;
+      const m=max||Math.max(val,target)*1.35;
+      const ok=invert?val<=target:val>=target;
+      c.insertAdjacentHTML('beforeend',
+        `<div class="vsbar"><span style="width:${Math.min(100,val/m*100)}%;
+          background:${ok?'var(--good)':'var(--crit)'}"></span></div>`);
+    }
+    c.appendChild(el('div','d',t.d));
+    if(t.extra) c.insertAdjacentHTML('beforeend',`<div class="d">${t.extra}</div>`);
+    if(t.spark && !t.splitbar) c.appendChild(spark(t.spark,150,24,cv('--s1')));
+    if(t.more) c.appendChild(el('div','more',t.more+' ›'));
+    hover(c,t.tip);
+    if(t.click) c.onclick=t.click;
+    box.appendChild(c);
+  });
+}
+function cmp(cur,prev,lowerBetter){
+  if(!prev) return '';
+  const p=(cur-prev)/prev*100;
+  if(Math.abs(p)<3) return `<span style="color:var(--muted)">level on previous ${P===1?'week':P+' weeks'}</span>`;
+  const worse = lowerBetter ? p>0 : p<0;
+  return `<span class="${worse?'bad':'ok'}">${p>0?'up':'down'} ${Math.abs(p).toFixed(0)}%</span>
+    on previous ${P===1?'week':P+' weeks'}`;
+}
+
+/* ---------------------------------------------- categories */
+let OPEN_CAT=null;
+function renderCats(){
+  const box=$('#cats'); box.innerHTML='';
+  const [a,b]=range();
+  const rows=CATS.map(c=>{
+    const n=sum(DATA.cat_n[c].slice(a,b+1)), prev=sum(DATA.cat_n[c].slice(a-P,a))||1;
+    return {c,n,prev,chg:(n-prev)/prev,
+      cost:sum(DATA.cat_cost[c].slice(a,b+1)),
+      pos:sum(DATA.cat_pos[c].slice(a,b+1)),
+      neg:sum(DATA.cat_neg[c].slice(a,b+1))};
+  }).sort((x,y)=>y.n-x.n);
+  const tot=sum(rows.map(r=>r.n));
+  const t=el('table');
+  t.innerHTML=`<thead><tr><th></th><th>Category</th>
+    <th class="num">Pieces of feedback</th><th class="num">Share of all feedback</th>
+    <th class="num">Change on previous ${P===1?'week':P+' weeks'}</th>
+    <th>Positive / neutral / negative</th>
+    <th class="num">Cost of putting right</th><th>Last 26 weeks</th></tr></thead>`;
+  const tb=el('tbody');
+  rows.forEach(r=>{
+    const tr=el('tr','click');
+    const neu=r.n-r.pos-r.neg;
+    tr.innerHTML=`<td class="expander">${OPEN_CAT===r.c?'&#9662;':'&#9656;'}</td>
+      <td style="font-weight:600">${r.c}</td>
+      <td class="num">${fmt(r.n)}</td>
+      <td class="num">${(r.n/tot*100).toFixed(1)}%</td>
+      <td class="num ${r.chg>0.1?'bad':(r.chg<-0.1?'ok':'')}">${r.chg>0?'+':''}${(r.chg*100).toFixed(0)}%</td>
+      <td>${splitBar(r.pos,neu,r.neg)}</td>
+      <td class="num">${gbpx(r.cost)}</td>`;
+    const sp=el('td'); sp.appendChild(spark(DATA.cat_n[r.c].slice(CUR-25,CUR+1),96,22,cv('--s1')));
+    tr.appendChild(sp);
+    tr.onclick=()=>{OPEN_CAT=OPEN_CAT===r.c?null:r.c;renderCats();};
+    tb.appendChild(tr);
+    if(OPEN_CAT===r.c){
+      Object.keys(TH).filter(k=>TH[k][1]===r.c).map(k=>({k,...themeStat(k)}))
+        .sort((x,y)=>y.n-x.n).forEach(th=>{
+        const st=el('tr','click');
+        st.style.background='color-mix(in srgb,var(--s1) 4%,transparent)';
+        st.innerHTML=`<td></td><td style="padding-left:22px;color:var(--ink-2)">${TH[th.k][0]}</td>
+          <td class="num">${fmt(th.n)}</td>
+          <td class="num">${(th.n/tot*100).toFixed(1)}%</td>
+          <td class="num ${th.chg>0.15?'bad':(th.chg<-0.15?'ok':'')}">${th.chg>0?'+':''}${(th.chg*100).toFixed(0)}%</td>
+          <td></td><td class="num">${gbpx(th.cost)}</td>
+          <td><span class="code">open ›</span></td>`;
+        st.onclick=e=>{e.stopPropagation();openTheme(th.k);};
+        tb.appendChild(st);
+      });
+    }
+  });
+  t.appendChild(tb); box.appendChild(t);
+}
+
+/* ---------------------------------------------- sentiment by source */
+function renderSrc(){
+  const box=$('#srcChart'); box.innerHTML='';
+  const [a,b]=range();
+  const w=560,h=400,m={l:120,r:60,t:10,b:34};
+  const s=svg(w,h);
+  const rows=SRC.map(k=>({k,
+    pos:sum(DATA.src_pos[k].slice(a,b+1)),
+    neu:sum(DATA.src_neu[k].slice(a,b+1)),
+    neg:sum(DATA.src_neg[k].slice(a,b+1))}));
+  const bh=(h-m.t-m.b)/rows.length;
+  const BW=w-m.l-m.r;
+  rows.forEach((r,j)=>{
+    const t=r.pos+r.neu+r.neg||1, y=m.t+j*bh+7, hh=Math.min(30,bh-16);
+    let x=m.l;
+    [[r.pos,cv('--s1'),'Positive'],[r.neu,cv('--neu'),'Neutral'],[r.neg,cv('--s8'),'Negative']]
+      .forEach(([v,col,nm],k)=>{
+        const ww=v/t*BW;
+        const rect=mk('rect',{x,y,width:Math.max(0,ww-(k<2?2:0)),height:hh,fill:col,
+          rx:k===0||k===2?4:0});
+        hover(rect,`<b>${r.k}</b><br>${nm}: ${v} of ${t} (${(v/t*100).toFixed(0)}%)`);
+        s.appendChild(rect); x+=ww;
+      });
+    const lt=mk('text',{x:m.l-10,y:y+hh/2+4,class:'dlabel','text-anchor':'end'});
+    lt.textContent=r.k; s.appendChild(lt);
+    const vt=mk('text',{x:m.l+BW+8,y:y+hh/2+4,class:'dlabel'});
+    vt.textContent=(r.pos/t*100).toFixed(0)+'% pos'; s.appendChild(vt);
+  });
+  const ax=mk('text',{x:m.l+BW/2,y:h-8,class:'axname','text-anchor':'middle'});
+  ax.textContent='share of feedback from that source'; s.appendChild(ax);
+  box.appendChild(s);
+}
+
+/* ---------------------------------------------- products */
+function renderProducts(){
+  const box=$('#products'); box.innerHTML='';
+  const [a,b]=range();
+  const rows=Object.keys(SK).map(k=>{
+    const n=sum(DATA.sku_n[k].slice(a,b+1));
+    const prev=sum(DATA.sku_n[k].slice(a-P,a))||1;
+    const cost=sum(DATA.sku_cost[k].slice(a,b+1));
+    const units=(DATA.units_month*SK[k][3])/4.33*P;
+    return {k,n,cost,units,per:n/units*1000,chg:(n-prev)/prev,
+      name:SK[k][0]};
+  }).sort((x,y)=>y.per-x.per).slice(0,8);
+  const t=el('table');
+  t.innerHTML=`<thead><tr><th>Product</th>
+    <th class="num">Complaints</th>
+    <th class="num">Per 1,000 sold</th>
+    <th class="num">Change</th>
+    <th class="num">Cost of putting right</th>
+    <th>Last 26 weeks</th></tr></thead>`;
+  const tb=el('tbody');
+  rows.forEach(r=>{
+    const tr=el('tr');
+    tr.innerHTML=`<td><div style="font-weight:600">${r.name}</div>
+        <div class="code">${r.k} · ${fmt(r.units)} units sold</div></td>
+      <td class="num">${r.n}</td>
+      <td class="num" style="font-weight:600">${r.per.toFixed(1)}</td>
+      <td class="num ${r.chg>0.15?'bad':(r.chg<-0.15?'ok':'')}">${r.chg>0?'+':''}${(r.chg*100).toFixed(0)}%</td>
+      <td class="num">${gbpx(r.cost)}</td>`;
+    const sp=el('td'); sp.appendChild(spark(DATA.sku_n[r.k].slice(CUR-25,CUR+1),92,22,
+      r.chg>0.15?cv('--s8'):cv('--s1')));
+    tr.appendChild(sp); tb.appendChild(tr);
+  });
+  t.appendChild(tb); box.appendChild(t);
+}
+
+/* ---------------------------------------------- verbatims */
+function renderVerbs(){
+  const box=$('#verbs'); box.innerHTML='';
+  const flagged=alertList().slice(0,4).map(x=>x.code);
+  const others=Object.keys(TH).filter(c=>!flagged.includes(c))
+    .map(c=>({c,n:DATA.theme_n[c][CUR]})).sort((x,y)=>y.n-x.n).slice(0,24);
+  const pick=[...flagged,...others.sort(()=>Math.random()-.5).map(o=>o.c).slice(0,8)];
+  pick.slice(0,12).forEach(c=>{
+    const vs=DATA.verbatims[c]; if(!vs) return;
+    const sk=Object.keys(DATA.theme_sku[c]||{})[0];
+    const txt=vs[Math.floor(Math.random()*vs.length)].replace('{p}',sk?SK[sk][0]:'this');
+    const sent=DATA.theme_sent[c][CUR];
+    const word = sent>0.2?['Positive','p-good']:(sent<-0.2?['Negative','p-crit']:['Neutral','p-mut']);
+    const d=el('div','vb');
+    d.innerHTML=`<div class="m">
+        <span class="pill ${word[1]}">${word[0]}</span>
+        <span class="tag">${SRC[weightedSrc(c)]}</span>
+        <span class="tag">${TH[c][0]}</span>
+        ${sk?`<span class="tag">${SK[sk][0]}</span>`:''}
+        ${flagged.includes(c)?'<span class="pill p-crit">above usual range</span>':''}
+      </div><div class="t">“${txt}”</div>`;
+    d.onclick=()=>openTheme(c); box.appendChild(d);
+  });
+}
+function weightedSrc(c){const s=DATA.theme_src[c],t=sum(s)||1;let r=Math.random()*t;
+  for(let j=0;j<s.length;j++){r-=s[j];if(r<=0)return j;}return 0;}
+
+/* ---------------------------------------------- alerts */
+function renderAlerts(){
+  const box=$('#alerts'); box.innerHTML='';
+  const a=alertList();
+  $('#attCount').textContent=a.length;
+  $('#attCount').style.display=a.length?'':'none';
+  if(!a.length){box.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 2px">'+
+    'Every theme is running inside its usual range.</div>';return;}
+  const t=el('table');
+  t.innerHTML=`<thead><tr><th>Theme</th><th>Category</th>
+    <th class="num">Feedback</th><th class="num">Usual range</th>
+    <th class="num">Change</th><th>Seen in</th>
+    <th>Product and batch</th><th class="num">Cost</th>
+    <th class="num">Customers lost</th><th>Since</th></tr></thead>`;
+  const tb=el('tbody');
+  a.slice(0,10).forEach(r=>{
+    const tr=el('tr','click');
+    const flag = r.sev>=4 ? '<span class="pill p-crit">Safety</span>'
+               : r.isNew ? '<span class="pill p-ser">New theme</span>' : '';
+    tr.innerHTML=`<td><div style="font-weight:600">${r.label} ${flag}</div></td>
+      <td style="color:var(--ink-2)">${r.cat}</td>
+      <td class="num" style="font-weight:600">${r.n}</td>
+      <td class="num code">${Math.round(r.lo)} to ${Math.round(r.hi)}</td>
+      <td class="num bad">${r.chg>0?'+':''}${(r.chg*100).toFixed(0)}%</td>
+      <td><span class="code">${r.active.filter(Boolean).length} of 6 sources</span></td>
+      <td>${r.topSku?`<div style="font-size:11.5px">${SK[r.topSku][0]}</div>`:'<span class="code">not product related</span>'}
+        ${r.topBatch?`<div class="code">batch ${r.topBatch}</div>`:''}</td>
+      <td class="num">${gbpx(r.cost)}</td>
+      <td class="num">${r.churn}</td>
+      <td class="code">${weekLabel(r.first).end}</td>`;
+    tr.onclick=()=>openTheme(r.code); tb.appendChild(tr);
+  });
+  t.appendChild(tb); box.appendChild(t);
+}
+
+/* ---------------------------------------------- alert history */
+function renderHistory(){
+  const box=$('#history'); box.innerHTML='';
+  const events=[];
+  for(const code in TH){
+    if(TH[code][1]==='Praise') continue;
+    let run=null;
+    for(let i=Math.max(14,CUR-51);i<=CUR;i++){
+      const bd=bandFor(code,i), n=DATA.theme_n[code][i];
+      const over=n>bd.hi && n>=10;
+      if(over){ if(!run) run={code,start:i,end:i,peak:n}; else {run.end=i;run.peak=Math.max(run.peak,n);} }
+      else if(run){ if(run.end-run.start>=1) events.push(run); run=null; }
+    }
+    if(run && run.end-run.start>=1) events.push(run);
+  }
+  events.sort((a,b)=>b.start-a.start);
+  if(!events.length){box.innerHTML='<div style="color:var(--muted);font-size:13px">'+
+    'No alerts in this period.</div>';return;}
+  const t=el('table');
+  t.innerHTML=`<thead><tr><th>Raised</th><th>Theme</th><th class="num">Highest week</th>
+    <th class="num">Weeks running</th><th>Status</th></tr></thead>`;
+  const tb=el('tbody');
+  events.slice(0,14).forEach(e=>{
+    const open=e.end>=CUR-1;
+    const tr=el('tr','click');
+    tr.innerHTML=`<td class="code">${weekLabel(e.start).end}</td>
+      <td><div style="font-weight:600">${TH[e.code][0]}</div>
+          <div class="code">${TH[e.code][1]}</div></td>
+      <td class="num">${e.peak}</td>
+      <td class="num">${e.end-e.start+1}</td>
+      <td>${open?'<span class="pill p-crit">Still running</span>'
+                :'<span class="pill p-good">Back to normal</span>'}</td>`;
+    tr.onclick=()=>{CUR=Math.min(W-1,e.start+Math.round((e.end-e.start)/2));
+      $('#wkSel').value=CUR; renderAll(); openTheme(e.code);};
+    tb.appendChild(tr);
+  });
+  t.appendChild(tb); box.appendChild(t);
+}
+
+/* ---------------------------------------------- matrix */
+function renderMatrix(){
+  const box=$('#matrix'); box.innerHTML='';
+  const w=760,h=520,m={l:96,r:26,t:30,b:60};
+  const s=svg(w,h);
+  const flagged=new Set(alertList().map(a=>a.code));
+  const pts=[];
+  for(const c in TH){ if(TH[c][1]==='Praise') continue;
+    const st=themeStat(c); if(st.n<6*P) continue;
+    pts.push({c,...st,label:TH[c][0],flag:flagged.has(c)}); }
+  if(!pts.length){box.innerHTML='<div style="color:var(--muted);font-size:13px">'+
+    'Not enough feedback in this period to plot.</div>';return;}
+
+  const med=a=>{const q=[...a].sort((x,y)=>x-y);const k=q.length>>1;
+    return q.length%2?q[k]:(q[k-1]+q[k])/2;};
+  const ns=pts.map(p=>p.n), ss=pts.map(p=>p.sent);
+  const nMin=Math.min(...ns), nMax=Math.max(...ns), nMed=med(ns);
+  const sMin=Math.min(...ss), sMax=Math.max(...ss), sMed=med(ss);
+  const W=w-m.l-m.r, H=h-m.t-m.b;
+  const midX=m.l+W/2, midY=m.t+H/2;
+
+  // each axis is stretched either side of its median, so the median always lands
+  // dead centre and the four quadrants are the same size
+  const PAD=38;
+  const fx=t=>m.l+PAD+t*(W-2*PAD), fy=t=>m.t+PAD+t*(H-2*PAD);
+  const X=v=> v<=nMed
+    ? fx(nMed===nMin?0.5:(v-nMin)/(nMed-nMin)*0.5)
+    : fx(0.5 + (nMax===nMed?0:(v-nMed)/(nMax-nMed)*0.5));
+  const Y=v=> v>=sMed
+    ? fy(sMax===sMed?0.5:(sMax-v)/(sMax-sMed)*0.5)
+    : fy(0.5 + (sMed===sMin?0:(sMed-v)/(sMed-sMin)*0.5));
+
+  // quadrant fills, so the four boxes read as boxes
+  const q=(x,y,ww,hh,fill)=>s.appendChild(mk('rect',{x,y,width:ww,height:hh,fill,rx:6}));
+  q(m.l,m.t,W/2,H/2,cv('--card-2'));      // low volume, felt better: ignore
+  q(midX,m.t,W/2,H/2,cv('--sage-bg'));    // high volume, felt better: tolerated
+  q(m.l,midY,W/2,H/2,cv('--clay-bg'));    // low volume, felt worse: watch
+  q(midX,midY,W/2,H/2,cv('--brick-bg'));  // high volume, felt worse: fix now
+  s.appendChild(mk('line',{x1:midX,x2:midX,y1:m.t,y2:m.t+H,stroke:cv('--axis'),'stroke-width':1.5}));
+  s.appendChild(mk('line',{x1:m.l,x2:m.l+W,y1:midY,y2:midY,stroke:cv('--axis'),'stroke-width':1.5}));
+  s.appendChild(mk('rect',{x:m.l,y:m.t,width:W,height:H,fill:'none',
+    stroke:cv('--axis'),'stroke-width':1.5,rx:6}));
+
+  const lab=(x,y,t,an)=>{const e=mk('text',{x,y,class:'qlabel','text-anchor':an||'start'});
+    e.textContent=t;s.appendChild(e);};
+
+  // axis wording, no numbers, because the scale is deliberately not linear
+  const ax=(x,y,t,an,cls)=>{const e=mk('text',{x,y,class:cls||'axname','text-anchor':an||'middle'});
+    e.textContent=t;s.appendChild(e);};
+  ax(m.l,h-34,'less feedback','start','axtext');
+  ax(m.l+W,h-34,'more feedback','end','axtext');
+  ax(m.l+W/2,h-14,'How many pieces of feedback');
+  const yl=mk('text',{x:22,y:m.t+H/2,class:'axname','text-anchor':'middle',
+    transform:`rotate(-90 22 ${m.t+H/2})`}); yl.textContent='How customers feel';
+  s.appendChild(yl);
+  ax(m.l-14,m.t+14,'more positive','end','axtext');
+  ax(m.l-14,m.t+H-6,'more negative','end','axtext');
+
+  pts.sort((a,b)=>a.flag-b.flag).forEach(p=>{
+    const r=Math.max(4,Math.min(17,5+Math.abs(p.chg)*22));
+    const col=p.flag?cv('--brick'):cv('--forest-2');
+    const c=mk('circle',{cx:X(p.n),cy:Y(p.sent),r,fill:col,'fill-opacity':p.flag?.9:.5,
+      stroke:cv('--surface-1'),'stroke-width':2});
+    hover(c,`<b>${p.label}</b><br>${p.n} pieces of feedback
+      <br>changed ${p.chg>0?'+':''}${(p.chg*100).toFixed(0)}% on the previous period
+      ${p.flag?'<br><b>above its usual range</b>':''}`);
+    c.style.cursor='pointer'; c.onclick=()=>openTheme(p.c); s.appendChild(c);
+    if(p.flag){
+      const t0=p.label.length>24?p.label.slice(0,23)+'\u2026':p.label;
+      const px=X(p.n), py=Y(p.sent);
+      const an = px<m.l+120 ? 'start' : (px>m.l+W-140 ? 'end' : 'middle');
+      let tx=px, ty=py-r-9;
+      if(ty<m.t+18) ty=py+r+14;
+      const t=mk('text',{x:tx,y:ty,class:'dlabel','text-anchor':an});
+      t.textContent=t0; s.appendChild(t);}
+  });
+  lab(m.l+13,m.t+21,'Ignore');
+  lab(m.l+W-13,m.t+21,'Cost of doing business','end');
+  lab(m.l+13,midY+22,'Watch');
+  lab(m.l+W-13,midY+22,'Fix now','end');
+  box.appendChild(s);
+}
+
+/* ---------------------------------------------- cost breakdown */
+function openCost(){
+  const [a,b]=range(); const box=$('#overInner'); box.innerHTML='';
+  const redress=acc(DATA.tot.redress), churnCost=acc(DATA.tot.churncost);
+  const handle=acc(DATA.tot.handle), redN=acc(DATA.tot.rednum), lost=acc(DATA.tot.churn);
+  const head=el('div','ohead');
+  head.innerHTML='<div><h2>Cost of putting things right</h2></div>';
+  const cl=el('button','close','×'); cl.onclick=closeOver;
+  head.appendChild(el('div','spacer')); head.appendChild(cl); box.appendChild(head);
+  box.appendChild(el('div','osub',
+    P===1?weekLabel(CUR).full:`${weekLabel(a).range.split(' to ')[0]} to ${weekLabel(b).end}, ${P} weeks`));
+
+  const c1=el('div','card'); c1.style.marginBottom='14px';
+  c1.innerHTML=`<div class="chead"><div><h2>How the total is built</h2></div></div>
+   <table><thead><tr><th>What we spent it on</th><th class="num">How many</th>
+     <th class="num">Average each</th><th class="num">Total</th></tr></thead>
+   <tbody>
+     <tr><td>Replacements and refunds sent out<div class="code">product cost plus £3.20 postage and £1.10 pick and pack</div></td>
+       <td class="num">${redN}</td><td class="num">${gbpx(redress/(redN||1))}</td>
+       <td class="num">${gbpx(redress)}</td></tr>
+     <tr><td>Value of customers who cancelled<div class="code">the profit we would have earned had they stayed</div></td>
+       <td class="num">${lost}</td><td class="num">${gbpx(churnCost/(lost||1))}</td>
+       <td class="num">${gbpx(churnCost)}</td></tr>
+     <tr style="border-top:2px solid var(--axis)"><td style="font-weight:700">Total</td>
+       <td class="num"></td><td class="num"></td>
+       <td class="num" style="font-weight:700;font-size:15px">${gbpx(redress+churnCost)}</td></tr>
+   </tbody></table>
+   <table style="margin-top:16px"><thead><tr>
+     <th>Not included in the total</th><th class="num">Total</th></tr></thead>
+   <tbody><tr><td>Team time spent handling this feedback<div class="code">£1.25 when a macro handles it, £2.50 chat, £4.59 email, £7.50 phone. Already paid for in the team's salaries.</div></td>
+     <td class="num">${gbpx(handle)}</td></tr></tbody></table>`;
+  box.appendChild(c1);
+
+  const CONTRIB=[147.70,128.26,108.83,89.40,69.97,50.53,31.10,11.66];
+  const ordCounts=[];
+  for(let o=1;o<=8;o++) ordCounts.push(DATA.order_cost[String(o)][0]);
+  const totO=sum(ordCounts);
+  const c2=el('div','card');
+  c2.innerHTML=`<div class="chead"><div><h2>Why a cancelled customer costs what it does</h2></div></div>
+   <table><thead><tr><th>Orders placed</th>
+     <th class="num">Profit earned</th>
+     <th class="num">Acquisition cost unpaid</th>
+     <th class="num">Future profit lost</th>
+     <th class="num">Total cost if they leave</th></tr></thead><tbody>
+   ${[1,2,3,4,6,8].map(o=>{
+     const earned=22.32+(o-1)*19.43;
+     const unpaid=Math.max(0,34-earned);
+     const future=170.02-earned;
+     return `<tr><td>${o} time${o>1?'s':''}</td>
+       <td class="num">${gbpx(earned)}</td>
+       <td class="num">${unpaid?gbpx(unpaid):'all repaid'}</td>
+       <td class="num">${gbpx(future)}</td>
+       <td class="num" style="font-weight:600">${gbpx(CONTRIB[o-1])}</td></tr>`;}).join('')}
+   </tbody></table>`;
+  box.appendChild(c2);
+  $('#over').classList.add('on'); $('#scrim').classList.add('on');
+}
+
+/* ---------------------------------------------- theme drill */
+function openTheme(code){
+  const st=themeStat(code), box=$('#overInner');
+  const inc=DATA.incidents.find(x=>x.themes.includes(code)&&CUR>=x.start-2&&CUR<=x.start+x.length+6);
+  box.innerHTML='';
+  const head=el('div','ohead');
+  head.innerHTML=`<div><h2>${TH[code][0]}</h2></div>`;
+  const cl=el('button','close','×'); cl.onclick=closeOver;
+  head.appendChild(el('div','spacer')); head.appendChild(cl); box.appendChild(head);
+  box.appendChild(el('div','osub',`${TH[code][1]} · ${weekLabel(CUR).full}`+
+    (TH[code][2]>=4?' · treated as a safety issue':'')));
+
+  const strip=el('div','grid'); strip.style.gridTemplateColumns='repeat(4,1fr)';
+  [['Pieces of feedback',st.n],
+   ['Usual range',`${Math.round(st.lo)} to ${Math.round(st.hi)}`],
+   ['Change on previous period',(st.chg>0?'+':'')+(st.chg*100).toFixed(0)+'%'],
+   ['Cost of putting right',gbpx(st.cost)]].forEach(([k,v])=>{
+    const c=el('div','tile tone-sage');
+    c.innerHTML=`<div class="k">${k}</div><div class="v" style="font-size:20px">${v}</div><div class="d">&nbsp;</div>`;
+    strip.appendChild(c);});
+  box.appendChild(strip);
+
+  if(inc){
+    const w=el('div','card'); w.style.marginBottom='14px';
+    w.innerHTML=`<div class="chead"><div><h2>Cause identified</h2></div></div>
+      <div style="font-size:13px;color:var(--ink-2)"><b>${inc.name}.</b> ${inc.note}
+      ${inc.batch?`<br>Concentrated on batch <b>${inc.batch}</b>.`:''}
+      ${inc.skus.length?`<br>Products affected: ${inc.skus.map(s=>SK[s][0]).join(', ')}.`:''}</div>`;
+    box.appendChild(w);
+  }
+
+  const cc=el('div','card'); cc.style.marginBottom='14px';
+  cc.innerHTML='<div class="chead"><div><h2>Volume each week against its usual range</h2></div></div>';
+  cc.appendChild(controlChart(code));
+  cc.insertAdjacentHTML('beforeend',
+    '<div class="legend"><span><i style="background:var(--s1)"></i>Feedback received</span>'+
+    '<span><i style="background:color-mix(in srgb,var(--s1) 22%,transparent)"></i>Usual range</span>'+
+    '<span><i style="background:var(--s8)"></i>Above usual range</span></div>');
+  box.appendChild(cc);
+
+  const two=el('div','o2');
+  const c1=el('div','card');
+  c1.innerHTML='<div class="chead"><div><h2>Which sources it appears in</h2><div class="sub">last 20 weeks</div></div></div>';
+  c1.appendChild(sourceTimeline(code)); two.appendChild(c1);
+  const c2=el('div','card');
+  const sk=DATA.theme_sku[code]||{}, bt=DATA.theme_batch[code]||{};
+  c2.innerHTML='<div class="chead"><div><h2>Where it is concentrated</h2></div></div>';
+  c2.appendChild(barList(Object.entries(sk).map(([k,v])=>[SK[k]?SK[k][0]:k,v]),'Product'));
+  if(Object.keys(bt).length) c2.appendChild(barList(Object.entries(bt),'Production batch'));
+  two.appendChild(c2); box.appendChild(two);
+
+  const c4=el('div','card'); c4.style.marginTop='14px';
+  c4.innerHTML='<div class="chead"><div><h2>In their own words</h2></div></div>';
+  (DATA.verbatims[code]||[]).forEach(v=>{const s0=Object.keys(sk)[0];
+    c4.insertAdjacentHTML('beforeend',
+      `<div class="vb" style="cursor:default"><div class="t">“${v.replace('{p}',s0?SK[s0][0]:'this')}”</div></div>`);});
+  box.appendChild(c4);
+  $('#over').classList.add('on'); $('#scrim').classList.add('on');
+}
+const closeOver=()=>{$('#over').classList.remove('on');$('#scrim').classList.remove('on');};
+
+function controlChart(code){
+  const start=Math.max(14,CUR-51), n=CUR-start+1;
+  const w=820,h=250,m={l:44,r:14,t:12,b:30};
+  const s=svg(w,h), nn=DATA.theme_n[code];
+  const band=[]; for(let i=start;i<=CUR;i++) band.push(bandFor(code,i));
+  const vals=nn.slice(start,CUR+1);
+  const maxV=Math.max(...vals,...band.map(b=>b.hi))*1.1;
+  const X=j=>m.l+j/(n-1)*(w-m.l-m.r), Y=v=>m.t+(1-v/maxV)*(h-m.t-m.b);
+  [0,.25,.5,.75,1].forEach(f=>{const y=m.t+(1-f)*(h-m.t-m.b);
+    s.appendChild(mk('line',{x1:m.l,x2:w-m.r,y1:y,y2:y,stroke:cv('--grid')}));
+    const t=mk('text',{x:m.l-8,y:y+3,class:'axtext','text-anchor':'end'});
+    t.textContent=Math.round(f*maxV);s.appendChild(t);});
+  s.appendChild(mk('path',{d:[...band.map((b,j)=>(j?'L':'M')+X(j)+' '+Y(b.hi)),
+    ...band.map((b,j)=>'L'+X(n-1-j)+' '+Y(band[n-1-j].lo))].join(' ')+'Z',
+    fill:cv('--s1'),'fill-opacity':.14}));
+  s.appendChild(mk('path',{d:vals.map((v,j)=>(j?'L':'M')+X(j)+' '+Y(v)).join(' '),
+    fill:'none',stroke:cv('--s1'),'stroke-width':2,'stroke-linejoin':'round'}));
+  vals.forEach((v,j)=>{const out=v>band[j].hi;
+    const c=mk('circle',{cx:X(j),cy:Y(v),r:out?4.5:2.4,fill:out?cv('--s8'):cv('--s1'),
+      stroke:cv('--surface-1'),'stroke-width':2});
+    hover(c,`<b>${weekLabel(start+j).full}</b><br>${v} pieces of feedback
+      <br>usual range ${Math.round(band[j].lo)} to ${Math.round(band[j].hi)}
+      ${out?'<br><b>above usual range</b>':''}`);
+    s.appendChild(c);});
+  for(let j=0;j<n;j+=9){const t=mk('text',{x:X(j),y:h-8,class:'axtext','text-anchor':'middle'});
+    t.textContent=weekLabel(start+j).end;s.appendChild(t);}
+  return s;
+}
+function sourceTimeline(code){
+  const wts=DATA.week_theme_src[code], box=el('div');
+  if(!wts){box.innerHTML='<div style="color:var(--muted);font-size:12.5px">'+
+    'Week by week source history is kept only for themes that can signal a fault.</div>';return box;}
+  const start=Math.max(0,CUR-19), n=CUR-start+1, w=380;
+  const s=svg(w,34*SRC.length+8);
+  const maxV=Math.max(1,...Array.from({length:n},(_,j)=>Math.max(...wts[start+j])));
+  SRC.forEach((src,si)=>{
+    const y0=si*34+16;
+    const t=mk('text',{x:0,y:y0-4,class:'dlabel'});t.textContent=src;s.appendChild(t);
+    for(let j=0;j<n;j++){
+      const v=wts[start+j][si], bw=(w-4)/n, hh=Math.max(1.5,(v/maxV)*16);
+      const r=mk('rect',{x:j*bw+1,y:y0+16-hh,width:bw-2,height:hh,fill:cv('--s1'),
+        'fill-opacity':v?.85:.16,rx:1.5});
+      hover(r,`<b>${src}</b><br>${weekLabel(start+j).end}: ${v}`); s.appendChild(r);}
+  });
+  box.appendChild(s); return box;
+}
+function barList(pairs,title){
+  const box=el('div');
+  if(title) box.insertAdjacentHTML('beforeend',
+    `<div style="font-size:11px;color:var(--muted);margin:10px 0 6px">${title}</div>`);
+  const mx=Math.max(...pairs.map(p=>p[1]),1);
+  pairs.forEach(([k,v])=>{
+    box.insertAdjacentHTML('beforeend',
+      `<div style="display:flex;align-items:center;gap:8px;margin:5px 0">
+        <div style="flex:0 0 130px;font-size:11.5px;color:var(--ink-2);overflow:hidden;
+          text-overflow:ellipsis;white-space:nowrap">${k}</div>
+        <div style="flex:1;height:12px;background:var(--grid);border-radius:3px;overflow:hidden">
+          <div style="width:${v/mx*100}%;height:100%;background:var(--s1);border-radius:3px"></div></div>
+        <div style="flex:0 0 42px;text-align:right;font-size:11.5px;
+          font-variant-numeric:tabular-nums">${v}</div></div>`);});
+  return box;
+}
+
+/* ---------------------------------------------- data freshness */
+function renderChip(){
+  const behind=SRC.filter(s=>DATA.src_n[s][CUR] < median(DATA.src_n[s].slice(CUR-13,CUR))*0.45);
+  const chip=$('#dataChip');
+  chip.innerHTML=`<i style="background:${behind.length?'var(--warn)':'var(--good)'}"></i>`+
+    (behind.length?`${behind.length} source${behind.length>1?'s':''} behind`
+                  :`All 6 sources up to date`);
+  chip.onclick=openFreshness;
+}
+function openFreshness(){
+  const box=$('#overInner'); box.innerHTML='';
+  const head=el('div','ohead');
+  head.innerHTML='<div><h2>Where this data comes from</h2></div>';
+  const cl=el('button','close','×'); cl.onclick=closeOver;
+  head.appendChild(el('div','spacer')); head.appendChild(cl); box.appendChild(head);
+  box.appendChild(el('div','osub',
+    'If a source stops sending, every number on the dashboard quietly becomes wrong. This is the check.'));
+  const c=el('div','card');
+  c.innerHTML=`<table><thead><tr><th>Source</th><th>How it connects</th>
+    <th class="num">Feedback this week</th><th class="num">Usual</th><th>Status</th></tr></thead>
+    <tbody>${SRC.map(s=>{
+      const n=DATA.src_n[s][CUR], usual=Math.round(median(DATA.src_n[s].slice(CUR-13,CUR)));
+      const behind=n<usual*0.45;
+      const how={'Support - email':'HubSpot and Zendesk, every 15 minutes',
+        'Support - chat':'HubSpot conversations, every 15 minutes',
+        'Support - phone':'Jiminny call transcripts, nightly',
+        'Trustpilot':'Trustpilot Service and Product Reviews API, hourly',
+        'Product reviews':'Review platform webhook, on submission',
+        'Google':'Google Business Profile API, hourly'}[s];
+      return `<tr><td style="font-weight:600">${s}</td><td style="color:var(--ink-2)">${how}</td>
+        <td class="num">${n}</td><td class="num">${usual}</td>
+        <td>${behind?'<span class="pill p-warn">Below usual, check the feed</span>'
+                    :'<span class="pill p-good">Normal</span>'}</td></tr>`;}).join('')}
+    </tbody></table>`;
+  box.appendChild(c);
+  $('#over').classList.add('on'); $('#scrim').classList.add('on');
+}
+
+/* ---------------------------------------------- chrome */
+function buildWeekSelect(){
+  const sel=$('#wkSel'); sel.innerHTML='';
+  for(let i=W-1;i>=13;i--){
+    const l=weekLabel(i);
+    sel.insertAdjacentHTML('beforeend',
+      `<option value="${i}">Week ${l.wn}, ${l.yr} (${l.range})</option>`);
+  }
+  sel.value=CUR;
+}
+function renderAll(){
+  $('#wkSel').value=CUR;
+  const l=weekLabel(CUR);
+  $('#cmpNote').textContent = P===1
+    ? `compared with the previous week`
+    : `compared with the previous ${P} weeks`;
+  renderChip(); renderTiles(); renderCats(); renderSrc(); renderProducts();
+  renderVerbs(); renderAlerts(); renderHistory(); renderMatrix();
+}
+$('#periodSeg').onclick=e=>{if(!e.target.dataset.p)return;
+  [...e.currentTarget.children].forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on'); P=+e.target.dataset.p; renderAll();};
+$('#wkSel').onchange=e=>{CUR=+e.target.value;renderAll();};
+$('#prevWk').onclick=()=>{if(CUR>13){CUR--;renderAll();}};
+$('#nextWk').onclick=()=>{if(CUR<W-1){CUR++;renderAll();}};
+document.querySelector('.tabs').onclick=e=>{
+  if(!e.target.dataset.tab)return;
+  [...e.currentTarget.children].forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on'); TAB=e.target.dataset.tab;
+  $('#tabSay').classList.toggle('hide',TAB!=='say');
+  $('#tabAtt').classList.toggle('hide',TAB!=='att');};
+$('#themeBtn').onclick=()=>{const d=document.documentElement, dark=d.dataset.theme==='dark';
+  d.dataset.theme=dark?'light':'dark'; $('#themeBtn').textContent=dark?'Dark':'Light'; renderAll();};
+$('#scrim').onclick=closeOver;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOver();});
+buildWeekSelect(); renderAll();
+</script>
+</body>
+</html>
